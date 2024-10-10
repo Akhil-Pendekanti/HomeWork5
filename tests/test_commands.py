@@ -8,79 +8,83 @@ application will handle input/output correctly, including edge cases like divisi
 
 import pytest
 from app import App
-from app.commands.add import AddCommand
-from app.commands.subtract import SubtractCommand
-from app.commands.multiply import MultiplyCommand
-from app.commands.divide import DivideCommand
+from app.plugins.add import AddCommand
+from app.plugins.subtract import SubtractCommand
+from app.plugins.multiply import MultiplyCommand
+from app.plugins.divide import DivideCommand
+
 def test_add_command(capfd, monkeypatch):
     """
-    Test the AddCommand's functionality.
-    This test simulates user input ('5 3') and verifies whether the addition result
+    Test the AddCommand's functionality.    
+    This test simulates user input ('4 5') and verifies whether the addition result
     ('Additon result: 8') is correctly printed to stdout.
-    """    
-    monkeypatch.setattr('builtins.input', lambda _: '5 3')
+    """
+    monkeypatch.setattr('builtins.input', lambda _: '4 5')
     command = AddCommand()
     command.execute()
     out, err = capfd.readouterr()
-    assert "Additon result: 8" in out, "The AddCommand should print the correct addition result."
+    assert "Additon result: 9" in out, "The AddCommand should print the correct addition result."
+
 def test_subtract_command(capfd, monkeypatch):
     """
-    Test the SubtractCommand's functionality.
-    This test simulates user input ('5 3') and verifies whether the subtraction result
-    ('Subtraction result: 2') is correctly printed to stdout.
+    Test the SubtractCommand's functionality.    
+    This test simulates user input ('5 4') and verifies whether the subtraction result
+    ('Subtraction result: 1') is correctly printed to stdout.
     """
-
-    monkeypatch.setattr('builtins.input', lambda _: '5 3')
+    monkeypatch.setattr('builtins.input', lambda _: '5 4')
     command = SubtractCommand()
     command.execute()
     out, err = capfd.readouterr()
-    assert "Subtraction result: 2" in out, "The SubtractCommand should print the correct subtraction result."
+    assert "Subtraction result: 1" in out, "The SubtractCommand should print the correct subtraction result."
+
 def test_multiply_command(capfd, monkeypatch):
     """
     Test the MultiplyCommand's functionality.
-    This test simulates user input ('5 3') and verifies whether the multiplication result
+    This test simulates user input ('5 4') and verifies whether the multiplication result
     ('Multiplication result: 15') is correctly printed to stdout.
     """
-
-    monkeypatch.setattr('builtins.input', lambda _: '5 3')
+    monkeypatch.setattr('builtins.input', lambda _: '5 4')
     command = MultiplyCommand()
     command.execute()
     out, err = capfd.readouterr()
-    assert "Multiplication result: 15" in out, "The MultiplyCommand should print the correct multiplication result."
+    assert "Multiplication result: 20" in out, "The MultiplyCommand should print the correct multiplication result."
+
 def test_divide_command(capfd, monkeypatch):
     """
     Test the DivideCommand's functionality.
     This test simulates user input ('9 3') and verifies whether the division result
     ('Division result: 3') is correctly printed to stdout.
     """
-
     monkeypatch.setattr('builtins.input', lambda _: '9 3')
     command = DivideCommand()
     command.execute()
     out, err = capfd.readouterr()
     assert "Division result: 3" in out, "The DivideCommand should print the correct division result."
+
 def test_dividebyzero_command(capfd, monkeypatch):
     """
     This test simulates user input ('9 0') and verifies that an appropriate error message
-    ('Error Occured! DivisionByzero or DivisionByNegative') is printed when attempting to divide by zero.
+    ('Error Occured! DivisionByzero') is printed when attempting to divide by zero.
     """
-
+    
     monkeypatch.setattr('builtins.input', lambda _: '9 0')
     command = DivideCommand()
     command.execute()
     out, err = capfd.readouterr()
-    assert "Error Occured! DivisionByzero or DivisionByNegative" in out, "Error should be Occured."
+
+    assert "Error Occured! DivisionByzero" in out, "Error should be Occured."
+
 def test_app_menu_command(capfd, monkeypatch):
     """
     Test that the REPL correctly handles the 'menu' command and exits cleanly.
     This test simulates user input to display the menu and then exit the application,
     ensuring the menu is displayed and the app exits gracefully with the expected output.
     """
-    
+
     inputs = iter(['menu', 'exit'])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
     app = App()
     with pytest.raises(SystemExit) as e:
         app.start()  # Assuming App.start() is now a static method based on previous discussions
-    
+        
     assert str(e.value) == "Exiting...", "The app did not exit as expected"
