@@ -5,13 +5,13 @@ This module will have the unit tests that will validate the behavior of differen
 The tests will be simulating user input to ensure commands will work as expected and will verify that the
 application will handle input/output correctly, including edge cases like division by zero.
 """
+
 import pytest
 from app import App
 from app.plugins.add import AddCommand
 from app.plugins.subtract import SubtractCommand
 from app.plugins.multiply import MultiplyCommand
 from app.plugins.divide import DivideCommand
-
 
 def test_add_command(capfd, monkeypatch):
     """
@@ -66,10 +66,12 @@ def test_dividebyzero_command(capfd, monkeypatch):
     This test simulates user input ('9 0') and verifies that an appropriate error message
     ('Error Occured! DivisionByzero') is printed when attempting to divide by zero.
     """
+    
     monkeypatch.setattr('builtins.input', lambda _: '9 0')
     command = DivideCommand()
     command.execute()
     out, err = capfd.readouterr()
+
     assert "Error Occured! DivisionByzero" in out, "Error should be Occured."
 
 def test_app_menu_command(capfd, monkeypatch):
@@ -78,9 +80,11 @@ def test_app_menu_command(capfd, monkeypatch):
     This test simulates user input to display the menu and then exit the application,
     ensuring the menu is displayed and the app exits gracefully with the expected output.
     """
+
     inputs = iter(['menu', 'exit'])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
     app = App()
     with pytest.raises(SystemExit) as e:
         app.start()  # Assuming App.start() is now a static method based on previous discussions
+        
     assert str(e.value) == "Exiting...", "The app did not exit as expected"

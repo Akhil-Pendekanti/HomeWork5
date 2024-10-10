@@ -1,3 +1,4 @@
+
 import pkgutil
 import importlib
 from app.commands import CommandHandler
@@ -25,4 +26,3 @@ class App:
         while True:
             self.command_handler.execute_command(input(">>> ").strip())
 
-        
